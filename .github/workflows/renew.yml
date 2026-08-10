@@ -5,6 +5,11 @@ on:
     - cron: '0 */5 * * *'  # 每 5 小时自动执行一次
   workflow_dispatch:       # 支持手动触发
 
+# 自动清理/并发控制：如果已有运行中的任务，取消旧任务，防止日志堆积
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check-and-start:
     runs-on: ubuntu-latest
