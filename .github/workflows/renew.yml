@@ -2,13 +2,8 @@ name: IceHost Hourly KeepAlive
 
 on:
   schedule:
-    - cron: '0 */5 * * *'  # 每 5 小时自动执行一次
-  workflow_dispatch:       # 支持手动触发
-
-# 自动清理/并发控制：如果已有运行中的任务，取消旧任务，防止日志堆积
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+    - cron: '0 */5 * * *'  # 🟢 开启自动触发：每 5 小时自动执行一次
+  workflow_dispatch:       # 🟢 保留手动触发：允许你在网页上随时点击运行
 
 jobs:
   check-and-start:
@@ -36,3 +31,15 @@ jobs:
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
         run: python icehost_run.py
+
+      - name: Upload Debug Screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: icehost-debug-screenshot
+          path: icehost_debug_screenshot.png
+          if-no-files-found: ignore
+          retention-days: 1 # 🟢 加上此行：只保留 1 天，过期自动删，避免占用空间
+
+      # 🟢 如果后续依然报容量已满，可以直接把上面【Upload Debug Screenshot】整段删除，
+      # 或者在下面将它们注释掉（在行首加 #）。
