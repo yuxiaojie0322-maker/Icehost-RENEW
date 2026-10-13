@@ -51,6 +51,8 @@ jobs:
           ICEHOST_COOKIES: ${{ secrets.ICEHOST_COOKIES }}
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+          ALWAYS_NOTIFY: ${{ secrets.ALWAYS_NOTIFY || vars.ALWAYS_NOTIFY }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
         run: python -u private-scripts/icehost/icehost_run.py
 
       - name: Delete old workflow runs
